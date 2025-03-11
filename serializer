@@ -1,0 +1,39 @@
+from .models import DiaSemana, Plantao, Semana
+from rest_framework import serializers
+
+class DiaSemanaSerializer(serializers.ModelSerializer):
+    nome = serializers.SerializerMethodField()
+
+    class Meta:
+        model = DiaSemana
+        fields = ['id', 'valor', 'nome']
+
+    def get_nome(self, obj):
+        return str(obj)
+    
+    def to_representation(self, instance):
+        rep = super().to_representation(instance)
+        rep['nome'] = str(instance)
+        return rep
+
+class CriarPlantaoSerializer(serializers.ModelSerializer):
+    dias = serializers.PrimaryKeyRelatedField(queryset=DiaSemana.objects.all(), many=True)
+    class Meta:
+        model = Plantao
+        fields = ["id", "colaborador", "semana", "dias", "hora_incio", "hora_fim"]
+    
+class PlantaoSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Plantao
+        fields = ["id", "colaborador", "semana", "dias", "hora_incio", "hora_fim"]
+
+      
+class SemanaSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Semana
+        fields = ['id', 'data_inicio', 'data_fim']
+        
+        def to_representation(self, instance):
+            rep = super().to_representation(instance)
+            rep['descricao'] = str(instance)
+            return rep
