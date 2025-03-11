@@ -1,0 +1,11 @@
+id colaborador:  5
+criar_plantao.js:99 semana id: 1
+criar_plantao.js:103 dias marcados, Array(1)
+criar_plantao.js:107 12:12
+criar_plantao.js:111 13:13
+criar_plantao.js:120 Objectcolaborador: "5"dias: ['0']hora_fim: "13:13:00"hora_inicio: "12:12:00"semana: "1"[[Prototype]]: Object
+api/plantoes:1 
+            
+            
+           Failed to load resource: the server responded with a status of 500 (Internal Server Error)Understand this errorAI
+criar_plantao.js:130 Erro ao enviar: SyntaxError: Unexpected token '<', "<!DOCTYPE "... is not valid JSON
