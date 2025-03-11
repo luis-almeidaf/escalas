@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Cadastrar novo plantão{% endblock %}
+
+{% block extra_css %}
+    <link rel="stylesheet" href="{% static 'css/plantoes_app/criar_plantao.css' %}">
+{% endblock %}
+{% block content %}
+    <section class="criar-plantao">
+        <form class="form">
+            <meta name="csrf-token" content="{{ csrf_token }}">
+            <label for="grupo" class="label">
+                <span class="title">Escolha um grupo</span>
+                <select name="grupos" id="grupos" class="input-field">
+                </select>
+            </label>
+            <label for="colaboradores" class="label">
+                <span class="title">Escolha um colaborador</span>
+                <select name="colaboradores" id="colaboradores_select" class="input-field" disabled>
+                </select>
+            </label>
+            <div class="checkbox-group">
+                <label for="sexta">
+                    <input type="checkbox" name="dias_semana" id="sexta" value="0"/>Sexta
+                </label>
+                <label for="terca">
+                    <input type="checkbox" name="dias_semana" id="terca"value="4"/>Terça
+                </label>
+                <label for="sabado">
+                    <input type="checkbox" name="dias_semana" id="sabado" value="1"/>Sábado
+                </label>
+                <label for="quarta">
+                    <input type="checkbox" name="dias_semana" id="quarta" value="5"/>Quarta
+                </label>
+                <label for="domingo">
+                    <input type="checkbox" name="dias_semana" id="domingo"value="2"/>Domingo
+                </label>
+                <label for="quinta">
+                    <input type="checkbox" name="dias_semana" id="quinta" value="6"/>Quinta
+                </label>
+                <label for="segunda">
+                    <input type="checkbox" name="dias_semana" id="segunda" value="3"/>Segunda
+                </label>
+            </div>
+            <div class="split">
+                <label for="hora-inicio" class="label">
+                    <span class="title">Hora Início</span>
+                    <input
+                        id="hora-inicio"
+                        class="input-field"
+                        type="time"
+                        name="hora-inicio"
+                        title="Hora Início"
+                    />
+                </label>
+                <label for="hora-fim" class="label">
+                    <span class="title">Hora fim</span>
+                    <input
+                        id="hora-fim"
+                        class="input-field"
+                        type="time"
+                        name="hora-fim"
+                        title="Hora fim"
+                    />
+                </label>
+            </div>
+            
+            <label for="semana-plantao" class="label">
+                <span class="title">Semana do plantão</span>
+                <select name="semanas" id="semanas" class="input-field">
+                </select>
+            </label>
+            <input class="checkout-btn" type="submit" value="Criar plantão" />
+        </form>
+    </section>
+
+    
+{% endblock content %}
+
+{% block scripts %}   
+    <script src="{% static 'js/plantoes_app/criar_plantao.js' %}"></script>
+{% endblock scripts %}
