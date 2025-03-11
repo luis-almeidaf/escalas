@@ -1,0 +1,83 @@
+from datetime import datetime
+from django.shortcuts import render
+from rest_framework import status
+from rest_framework.views import APIView, Response
+
+from .models import DiaSemana, Plantao,Semana
+from .serializers import CriarPlantaoSerializer,DiaSemanaSerializer,PlantaoSerializer,SemanaSerializer
+
+from contas_app.models import Colaborador
+from contas_app.serializers import ColaboradorPlantaoSerializer
+
+
+# API views
+class PlantaoView(APIView):
+    def get(self, request): #tras todos os plantões no banco de dados
+        plantoes = Plantao.objects.all()
+        serializer = PlantaoSerializer(plantoes, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        """Cria o serializer com os dados da request.
+            Valida e lança exceção em caso de erro.
+            Se estiver ok salva no banco de dados
+        Returns:
+            retorna o objeto criado e status 201
+        """
+        serializer = CriarPlantaoSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        plantao = serializer.save()
+        response_serializer = PlantaoSerializer(plantao)
+        return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+
+class PlantaoPorColaboradorList(APIView):
+    def get(self, request): #busca todos usuário e traz os plantões associados
+        colaboradores = Colaborador.objects.all()
+        serializer = ColaboradorPlantaoSerializer(colaboradores, many=True)
+        return Response(serializer.data)
+
+class SemanaView(APIView):
+    def get(self, request):
+        semanas = Semana.objects.all()
+        serializer = SemanaSerializer(semanas, many=True)
+        return Response(serializer.data)
+    
+    def post(self, request):
+        dias_semana = [
+            (0, "Sexta-feira"),
+            (1, "Sábado"),
+            (2, "Domingo"),
+            (3, "Segunda-feira"),
+            (4, "Terça-feira"),
+            (5, "Quarta-feira"),
+            (6, "Quinta-feira"),
+        ]
+        for valor, nome in dias_semana:
+            dia_semana, created = DiaSemana.objects.get_or_create(valor=valor)
+            if created:
+                print(f"Dia da semana criado: {dia_semana}")
+        
+        return Response({"message": "Dias da semana criados"}, status=status.HTTP_201_CREATED)
+    
+class DiaSemanaView(APIView):
+    def get(self, request):
+        dia_semana = DiaSemana.objects.all()
+        serializer = DiaSemanaSerializer(dia_semana, many = True)
+        return Response(serializer.data)
+
+
+# Template views
+def criar_plantao(request):
+    hoje = datetime.now().date()
+    ultima_semana = Semana.objects.order_by('-data_fim').first()
+    
+    if not ultima_semana or (hoje - ultima_semana.data_fim).days >= 28:
+        Semana.criar_proximas_semanas(4)
+    
+    semanas = Semana.objects.all().order_by('data_inicio')
+    return render(request, "criar_plantao.html", {'semanas': semanas})
+
+
+def listar_plantoes(request):
+    return render(request, "listar_plantoes.html")
